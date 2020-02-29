@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { StaticQuery, graphql } from "gatsby";
 import Image from "gatsby-image";
 
 import { rhythm } from "../utils/typography";
 import styled from "styled-components";
 import { externalLinkText } from "../utils/helpers";
-import { useSpring, useTransition, animated } from "react-spring";
+import { useSpring, useTransition, animated, useChain } from "react-spring";
 
 const NameComponent = styled.span`
   color: "#131316";
@@ -41,25 +41,27 @@ const RootIncLink = externalLinkText(
 );
 
 function Bio() {
-  const springProps = useSpring({
-    from: {}
+  const [show, set] = useState(false);
+
+  const springRef = useRef();
+  const textAnimation = useSpring({
+    ref: springRef,
+    from: { opacity: 0 },
+    opacity: 1
   });
 
-  const [show, set] = useState(false);
+  const transitionRef = useRef();
   const transitions = useTransition(show, null, {
-    from: { borderRadius: "50px", width: "50%", height: "50%" },
-    enter: { borderRadius: "15px" }
+    ref: transitionRef,
+    from: { borderRadius: "50%", width: "50%" },
+    enter: item => async (next, cancel) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await next({ borderRadius: "6%", width: "80%" });
+    },
+    config: { tension: 120, mass: 1 }
   });
-  const stuff = transitions.map(
-    ({ item, key, props }) =>
-      item && (
-        <animated.div key={key} style={props}>
-          <span role="img" aria-label="two fingers">
-            ✌hhelo worhgrehnsetan dthaertjh dehyq45euyn erhy4q5y45uj
-          </span>
-        </animated.div>
-      )
-  );
+
+  useChain([transitionRef, springRef]);
 
   return (
     <StaticQuery
@@ -67,14 +69,15 @@ function Bio() {
       render={data => {
         const { author } = data.site.siteMetadata;
         const Name = () => <NameComponent>{author}</NameComponent>;
-        const introText = () => (
-          <p>
+        const IntroText = () => (
+          <animated.p style={textAnimation}>
             Hi, I'm <Name /> I build software for libraries <OCLCLink /> using
             JavaScript/React, Java, and Spring. I love working with modern web
             technologies and building helpful/accessible products that serve the
             needs of users. Previously <RootIncLink />.
-          </p>
+          </animated.p>
         );
+
         return (
           <main
             style={{
@@ -102,8 +105,11 @@ function Bio() {
                 borderRadius: `50%`
               }}
             />
-            {stuff}
-            {/* {<BioText style={springProps}>{introText()}</BioText>} */}
+            {transitions.map(({ item, key, props }) => (
+              <BioText key={key} style={props}>
+                {/* TODO: implement text transform after the container changes shape */}
+              </BioText>
+            ))}
           </main>
         );
       }}
