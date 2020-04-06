@@ -30,8 +30,8 @@ export const GlobalStyle = createGlobalStyle`
   width: 100%;
   }
   #___gatsby,
-#___gatsby>div[role="group"] {
-    width: 100%;
+#gatsby-focus-wrapper {
+    height: 100%;
 }
   `;
 

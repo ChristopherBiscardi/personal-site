@@ -42,6 +42,7 @@ const RootIncLink = externalLinkText(
 
 function Bio() {
   const [show, set] = useState(false);
+  const [enterText, setEnterText] = useState(null);
 
   const springRef = useRef();
   const textAnimation = useSpring({
@@ -53,11 +54,16 @@ function Bio() {
   const transitionRef = useRef();
   const transitions = useTransition(show, null, {
     ref: transitionRef,
-    from: { borderRadius: "50%", width: "50%" },
+    from: { borderRadius: "50%", width: "150px", height: "150px" },
     enter: item => async (next, cancel) => {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await next({ borderRadius: "6%", width: "80%" });
+      await new Promise(resolve => setTimeout(resolve, 600));
+      await next({
+        borderRadius: "6%",
+        width: "90%",
+        height: "fit-content"
+      });
     },
+    onRest: _ => setEnterText(true),
     config: { tension: 120, mass: 1 }
   });
 
@@ -78,13 +84,19 @@ function Bio() {
           </animated.p>
         );
 
+        /*const Test = setTimeout(() => {
+          return <IntroText />;
+        }, [800]);*/
+
         return (
           <main
             style={{
               borderRadius: "15px",
               padding: "1rem",
               maxWidth: "1000px",
+              width: "100%",
               display: `flex`,
+
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
@@ -100,6 +112,7 @@ function Bio() {
                 width: "200px",
                 height: "200px",
                 borderRadius: `100%`
+                //position:'absolute'
               }}
               imgStyle={{
                 borderRadius: `50%`
@@ -107,7 +120,7 @@ function Bio() {
             />
             {transitions.map(({ item, key, props }) => (
               <BioText key={key} style={props}>
-                {/* TODO: implement text transform after the container changes shape */}
+                {enterText ? <IntroText /> : null}
               </BioText>
             ))}
           </main>
