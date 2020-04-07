@@ -42,7 +42,7 @@ const resumeDataObj = {
         },
         {
           text: `Writing new API endpoints in Java for a React/Material UI component within in a legacy YUI app. 
-  Specifically working within an administrative management application for librarians/staff in an library. Built new React Alert component for the frontend. `
+  Specifically working within an administrative management application for librarians/staff in an library. Assisted in building new React components for the frontend. `
         }
       ]
     },
