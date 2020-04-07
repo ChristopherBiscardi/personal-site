@@ -48,23 +48,23 @@ function Bio() {
   const textAnimation = useSpring({
     ref: springRef,
     from: { opacity: 0 },
-    opacity: 1
+    opacity: 1,
   });
 
   const transitionRef = useRef();
   const transitions = useTransition(show, null, {
     ref: transitionRef,
     from: { borderRadius: "50%", width: "150px", height: "150px" },
-    enter: item => async (next, cancel) => {
-      await new Promise(resolve => setTimeout(resolve, 600));
+    enter: (item) => async (next, cancel) => {
+      await new Promise((resolve) => setTimeout(resolve, 600));
       await next({
         borderRadius: "6%",
-        width: "90%",
-        height: "fit-content"
+        width: "fit-content",
+        height: "fit-content",
       });
     },
-    onRest: _ => setEnterText(true),
-    config: { tension: 120, mass: 1 }
+    onRest: (_) => setEnterText(true),
+    config: { tension: 120, mass: 1 },
   });
 
   useChain([transitionRef, springRef]);
@@ -72,7 +72,7 @@ function Bio() {
   return (
     <StaticQuery
       query={bioQuery}
-      render={data => {
+      render={(data) => {
         const { author } = data.site.siteMetadata;
         const Name = () => <NameComponent>{author}</NameComponent>;
         const IntroText = () => (
@@ -100,7 +100,7 @@ function Bio() {
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
-              marginBottom: rhythm(2.5)
+              marginBottom: rhythm(2.5),
             }}
           >
             <Image
@@ -111,11 +111,11 @@ function Bio() {
                 marginBottom: 0,
                 width: "200px",
                 height: "200px",
-                borderRadius: `100%`
+                borderRadius: `100%`,
                 //position:'absolute'
               }}
               imgStyle={{
-                borderRadius: `50%`
+                borderRadius: `50%`,
               }}
             />
             {transitions.map(({ item, key, props }) => (
